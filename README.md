@@ -1,5 +1,10 @@
-# Spring Boot Notes Application
+# GitHub Actions Demo
 
-A simple web-based notes application built with Spring Boot and MySQL, allowing users to create, view, and delete notes with timestamps.
-![image](https://github.com/user-attachments/assets/27510a54-451f-4227-8cf7-2ed6efbbc8cf)
+A demonstration repository for learning and implementing GitHub Actions workflows.
 
+## Overview
+
+This repository is used to learn and practice:
+- Basic GitHub Actions concepts
+- Workflow creation and management
+- CI/CD pipeline implementation
