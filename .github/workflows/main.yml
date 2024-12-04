@@ -37,3 +37,13 @@ jobs:
         SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/note_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
         SPRING_DATASOURCE_USERNAME: root
         SPRING_DATASOURCE_PASSWORD: ''
+    
+    - name: Build and push to Docker Hub
+      uses: mr-smithers-excellent/docker-build-push@v6
+      with:
+        image: saaida/notes-app
+        registry: docker.io
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    
