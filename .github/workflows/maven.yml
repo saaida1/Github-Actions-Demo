@@ -1,0 +1,54 @@
+name: Java CI with Maven and MySQL
+
+on:
+  push:
+    branches: [ "main" ]  # Triggers on push to main branch
+  pull_request:
+    branches: [ "main" ]  # Triggers on pull requests to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use Ubuntu as the runner environment
+
+    services:
+      mysql:  # MySQL service for testing
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ''  
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes' 
+          MYSQL_DATABASE: note_db  # Create this database on startup
+        ports:
+          - 3306:3306  # Map container port to host
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3  # Health check
+
+    
+    steps:
+    # Step 1: Check out the repository code
+    - uses: actions/checkout@v4
+    
+    # Step 2: Set up Java environment
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven  
+        
+    # Step 3: Build the application with Maven
+    - name: Build with Maven
+      run: mvn clean package -DskipTests  # Clean, then build, skip tests
+      env:
+        # Database connection settings
+        SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/note_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+        SPRING_DATASOURCE_USERNAME: root
+        SPRING_DATASOURCE_PASSWORD: ''
+    
+    # Step 4: Build Docker image and push to Docker Hub 
+    - name: Build and push to Docker Hub
+      uses: mr-smithers-excellent/docker-build-push@v6   #using a github action instead of explicitly write the commands 
+      with:
+        image: saaida/notes-app  
+        registry: docker.io      
+        username: ${{ secrets.DOCKER_USERNAME }}  
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: latest  
